@@ -13,9 +13,6 @@ title: Home
     </h1>
 
     <span class="post-date">{{ post.date | date_to_string }}</span>
-    <!-- 显示全部的内容 -->
-    <!-- {{ post.content }} -->
-    <!-- 显示第一次出现空行的的内容 -->
     {{ post.excerpt }}
   </div>
   {% endfor %}

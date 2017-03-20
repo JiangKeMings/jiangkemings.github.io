@@ -309,7 +309,9 @@ a.sidebar-nav-item:focus {
 
 .page,
 .post {
+  font: .9rem/2 Tahoma,Helvetica,Arial,"\5b8b\4f53",sans-serif;
   margin-bottom: 4em;
+  color: #665757;
 }
 
 /* Blog post or page title */

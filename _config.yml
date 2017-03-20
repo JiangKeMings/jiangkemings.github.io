@@ -3,7 +3,7 @@
 # Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
 # relative_permalinks: true
-
+highlighter:         pygments
 # Setup
 title:               Silver's
 tagline:             'Blog'
@@ -11,6 +11,8 @@ description:         'Talk is cheap,show me the code'
 url:                 http://lanyon.getpoole.com
 baseurl:             ''
 paginate:            5
+
+excerpt_separator:  <!-- more -->
 
 # About/contact
 author:
