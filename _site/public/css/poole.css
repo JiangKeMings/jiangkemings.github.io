@@ -155,11 +155,18 @@ pre {
   font-family: Monaco,Menlo, "Courier New", monospace;
 }
 code {
+  /*内部间距:上下,左右 */
   padding: .25em .5em;
-  font-size: 80%;
+  /*外部间距*/
+  margin-left: .25em;
+  margin-right: .25em;
+
+  font-size: 85%;
   color: #f36838;
   background-color: #F6F6F6;
   border-radius: 3px;
+  border-width: 3px;
+  /*border: thin solid gray;*/
 }
 pre {
   display: block;
@@ -176,12 +183,18 @@ pre {
   background-color: #F6F6F6;
 
 }
+/*在pre中的code的属性设置*/
 pre code {
   padding: 0;
   font-size: 100%;
   color: inherit;
+  border: none;
   background-color: transparent;
 }
+/*在p中的code*/
+/*p code{
+  font-size: .7rem;
+}*/
 
 /* Pygments via Jekyll */
 .highlight {
@@ -219,7 +232,9 @@ blockquote {
   padding: .5rem 1rem;
   margin: .8rem 0;
   color: #7a7a7a;
-  border-left: .25rem solid #e5e5e5;
+  background-color: #FFFFFF;
+  font-size: .7rem;
+  border-left: .25rem solid #CD5C5C;
 }
 blockquote p:last-child {
   margin-bottom: 0;

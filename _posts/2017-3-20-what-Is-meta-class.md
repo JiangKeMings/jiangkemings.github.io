@@ -108,6 +108,57 @@ struct objc_class {
 
  对于所有在`NSObject`体系下的实例,类和meta-class的来说，`NSObject`的所有的对象方法对它们来说都是有效的。对于类和meta-class来说,所有的`NSObject`的类方法是有效的。
 
- ![picture]({{site.baseurl}}/assets/instance-class-meta_class.png)
+ ![picture]({{site.baseurl}}/assets/translation/instance-class-meta_class-01.png)
 
 ### 通过实验证明以上观点
+为了证明以上观点,让我们看看我在文章开头给出的`ReportFunction`函数的输出吧.这个函数的目的是沿着`isa`指针并且打印它找到的是什么.
+
+为了执行`ReportFunction`函数,我们需要创建一个动态创建的类的实例并且执行`report`对象方法.
+
+{% highlight objc %}
+id instanceOfNewClass = [[newClass alloc] initWithDomain:@"someDomain" code:0 userInfo:nil];
+[instanceOfNewClass performSelector:@selector(report)];
+//[instanceOfNewClass release];
+{% endhighlight %}
+
+因为这里并没有声明`report`方法,所以我为了编译器不会给出一个警告，使用`performSelector:`去执行它.
+
+现在`ReportFunction`将会遍历所有的isa指针并且告诉我们什么对象被用作`Class`,`meta-Class`和`meta-Class`的类
+
+>
+获取一个对象的类: `ReportFunction`使用`object_getClass`去得到`isa`指针,应为`isa`是类的保护成员(你不能直接的访问其他对象的`isa`指针).`ReportFunction`没有使用`class`方法的原因是: 在一个类对象上执行`class`方法不会返回`meta-Class`，它始终都只会返回`Class`(所以`[NSString class]会返回`NSString`类而不是`NSString`的`meta-class`).
+
+这是NSObject的class对象方法和类方法的实现:
+ ![picture]({{site.baseurl}}/assets/translation/instance-class-meta_class-02.png)
+
+当程序运行的时候,这是它的输出(去掉了`NSlog`的前缀):
+{% highlight objc %}
+This object is 0x10010c810.
+Class is RuntimeErrorSubclass, and super is NSError.
+Following the isa pointer 1 times gives 0x10010c600
+Following the isa pointer 2 times gives 0x10010c630
+Following the isa pointer 3 times gives 0x7fff71038480
+Following the isa pointer 4 times gives 0x7fff71038480
+NSObject's class is 0x7fff710384a8
+NSObject's meta class is 0x7fff71038480
+{% endhighlight %}
+看着下面通过反复沿着`isa`指针到达的内存地址:
+* 对象的地址是`0x10010c810`
+* 类的地址是`0x10010c600`
+* `meta-class`的地址为`0x10010c630`
+* `meta-class`的`Class`(即`NSObject`的`meta-class`)的地址为`0x7fff71038480`
+* `NSObject`的`meta-class`的`Class`的地址是它本身的地址
+
+地址的值除了显示了我们之前讨论的从类到`meta-class`再到`NSObject`的`meta-class`的进展以外,其他的都并不重要.
+
+
+### 结论
+`meta-class`是一个`Class`对象的类.每一个`Class`都有一个自己的独特`meta-class`(因为每个`Class`有着自己的独特的方法列表).这就意味着所有的`Class`对象都各不相同.
+
+`meta-class`总是会确保`Class`对象拥有在层级的顶层的基类(NSObject)的对象方法和类方法,再加上基类到当前类之前的类的类方法。对于继承自`NSObject`的类来说,`NSObject`的对象和协议方法是定义给所有的`Class`(和`meta-class`)对象.
+
+✍️ ：在层级顶层的NSObject的`meta-class`的`superclass`指针是指向`NSObject`的类对象的,所以继承自`NSObject`的类的`meta-class`中会包含有`NSObject`所有的对象方法和类方法。
+>
+原文:The meta-class will always ensure that the `Class` object has all the instance and class methods of the base class in the hierarchy, plus all of the class methods in-between. For classes descended from `NSObject`, this means that all the `NSObject` instance and protocol methods are defined for all `Class` (and meta-class) objects.
+
+所有的`meta-class`都使用基类的`meta-class`(在`NSObject`继承体系下,是`NSObject`的`meta-class`)作为他们的类,也包括了在运行时机制中唯一自定义的基础级的`meta-class`.

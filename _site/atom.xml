@@ -4,7 +4,7 @@
  <title>Silver's</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2017-03-20T23:37:51+08:00</updated>
+ <updated>2017-03-21T13:17:31+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Silver</name>
@@ -122,9 +122,63 @@
 
 &lt;p&gt;对于所有在&lt;code&gt;NSObject&lt;/code&gt;体系下的实例,类和meta-class的来说，&lt;code&gt;NSObject&lt;/code&gt;的所有的对象方法对它们来说都是有效的。对于类和meta-class来说,所有的&lt;code&gt;NSObject&lt;/code&gt;的类方法是有效的。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/instance-class-meta_class.png&quot; alt=&quot;picture&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/translation/instance-class-meta_class-01.png&quot; alt=&quot;picture&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;通过实验证明以上观点&quot;&gt;通过实验证明以上观点&lt;/h3&gt;
+&lt;p&gt;为了证明以上观点,让我们看看我在文章开头给出的&lt;code&gt;ReportFunction&lt;/code&gt;函数的输出吧.这个函数的目的是沿着&lt;code&gt;isa&lt;/code&gt;指针并且打印它找到的是什么.&lt;/p&gt;
+
+&lt;p&gt;为了执行&lt;code&gt;ReportFunction&lt;/code&gt;函数,我们需要创建一个动态创建的类的实例并且执行&lt;code&gt;report&lt;/code&gt;对象方法.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objc&quot; data-lang=&quot;objc&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instanceOfNewClass&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;newClass&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;initWithDomain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;@&amp;quot;someDomain&amp;quot;&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;userInfo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instanceOfNewClass&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;performSelector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;@selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)];&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//[instanceOfNewClass release];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;因为这里并没有声明&lt;code&gt;report&lt;/code&gt;方法,所以我为了编译器不会给出一个警告，使用&lt;code&gt;performSelector:&lt;/code&gt;去执行它.&lt;/p&gt;
+
+&lt;p&gt;现在&lt;code&gt;ReportFunction&lt;/code&gt;将会遍历所有的isa指针并且告诉我们什么对象被用作&lt;code&gt;Class&lt;/code&gt;,&lt;code&gt;meta-Class&lt;/code&gt;和&lt;code&gt;meta-Class&lt;/code&gt;的类&lt;/p&gt;
+
+&lt;blockquote&gt;
+
+  &lt;p&gt;获取一个对象的类: &lt;code&gt;ReportFunction&lt;/code&gt;使用&lt;code&gt;object_getClass&lt;/code&gt;去得到&lt;code&gt;isa&lt;/code&gt;指针,应为&lt;code&gt;isa&lt;/code&gt;是类的保护成员(你不能直接的访问其他对象的&lt;code&gt;isa&lt;/code&gt;指针).&lt;code&gt;ReportFunction&lt;/code&gt;没有使用&lt;code&gt;class&lt;/code&gt;方法的原因是: 在一个类对象上执行&lt;code&gt;class&lt;/code&gt;方法不会返回&lt;code&gt;meta-Class&lt;/code&gt;，它始终都只会返回&lt;code&gt;Class&lt;/code&gt;(所以&lt;code&gt;[NSString class]会返回&lt;/code&gt;NSString&lt;code&gt;类而不是&lt;/code&gt;NSString&lt;code&gt;的&lt;/code&gt;meta-class`).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这是NSObject的class对象方法和类方法的实现:
+ &lt;img src=&quot;/assets/translation/instance-class-meta_class-02.png&quot; alt=&quot;picture&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;当程序运行的时候,这是它的输出(去掉了&lt;code&gt;NSlog&lt;/code&gt;的前缀):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objc&quot; data-lang=&quot;objc&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;This&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x10010c810&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;Class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RuntimeErrorSubclass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;super&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;NSError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Following&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isa&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pointer&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gives&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x10010c600&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Following&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isa&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pointer&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gives&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x10010c630&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Following&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isa&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pointer&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gives&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7fff71038480&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Following&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isa&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pointer&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gives&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7fff71038480&lt;/span&gt;
+&lt;span class=&quot;bp&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7fff710384a8&lt;/span&gt;
+&lt;span class=&quot;bp&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;meta&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7fff71038480&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;看着下面通过反复沿着&lt;code&gt;isa&lt;/code&gt;指针到达的内存地址:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;对象的地址是&lt;code&gt;0x10010c810&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;类的地址是&lt;code&gt;0x10010c600&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;meta-class&lt;/code&gt;的地址为&lt;code&gt;0x10010c630&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;meta-class&lt;/code&gt;的&lt;code&gt;Class&lt;/code&gt;(即&lt;code&gt;NSObject&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;)的地址为&lt;code&gt;0x7fff71038480&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;NSObject&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;的&lt;code&gt;Class&lt;/code&gt;的地址是它本身的地址&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;地址的值除了显示了我们之前讨论的从类到&lt;code&gt;meta-class&lt;/code&gt;再到&lt;code&gt;NSObject&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;的进展以外,其他的都并不重要.&lt;/p&gt;
+
+&lt;h3 id=&quot;结论&quot;&gt;结论&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;meta-class&lt;/code&gt;是一个&lt;code&gt;Class&lt;/code&gt;对象的类.每一个&lt;code&gt;Class&lt;/code&gt;都有一个自己的独特&lt;code&gt;meta-class&lt;/code&gt;(因为每个&lt;code&gt;Class&lt;/code&gt;有着自己的独特的方法列表).这就意味着所有的&lt;code&gt;Class&lt;/code&gt;对象都各不相同.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;meta-class&lt;/code&gt;总是会确保&lt;code&gt;Class&lt;/code&gt;对象拥有在层级的顶层的基类(NSObject)的对象方法和类方法,再加上基类到当前类之前的类的类方法。对于继承自&lt;code&gt;NSObject&lt;/code&gt;的类来说,&lt;code&gt;NSObject&lt;/code&gt;的对象和协议方法是定义给所有的&lt;code&gt;Class&lt;/code&gt;(和&lt;code&gt;meta-class&lt;/code&gt;)对象.&lt;/p&gt;
+
+&lt;p&gt;✍️ ：在层级顶层的NSObject的&lt;code&gt;meta-class&lt;/code&gt;的&lt;code&gt;superclass&lt;/code&gt;指针是指向&lt;code&gt;NSObject&lt;/code&gt;的类对象的,所以继承自&lt;code&gt;NSObject&lt;/code&gt;的类的&lt;code&gt;meta-class&lt;/code&gt;中会包含有&lt;code&gt;NSObject&lt;/code&gt;所有的对象方法和类方法。&lt;/p&gt;
+&lt;blockquote&gt;
+
+  &lt;p&gt;原文:The meta-class will always ensure that the &lt;code&gt;Class&lt;/code&gt; object has all the instance and class methods of the base class in the hierarchy, plus all of the class methods in-between. For classes descended from &lt;code&gt;NSObject&lt;/code&gt;, this means that all the &lt;code&gt;NSObject&lt;/code&gt; instance and protocol methods are defined for all &lt;code&gt;Class&lt;/code&gt; (and meta-class) objects.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;所有的&lt;code&gt;meta-class&lt;/code&gt;都使用基类的&lt;code&gt;meta-class&lt;/code&gt;(在&lt;code&gt;NSObject&lt;/code&gt;继承体系下,是&lt;code&gt;NSObject&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;)作为他们的类,也包括了在运行时机制中唯一自定义的基础级的&lt;code&gt;meta-class&lt;/code&gt;.&lt;/p&gt;
 </content>
  </entry>
  
