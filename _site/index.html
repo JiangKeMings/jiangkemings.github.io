@@ -42,7 +42,7 @@
   </div>
 
   <nav class="sidebar-nav">
-    <a class="sidebar-nav-item" href="/">Home</a>
+    <a class="sidebar-nav-item  active " href="/">Home</a>
 
     
 
@@ -63,10 +63,24 @@
       
     
       
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
      -->
 
-    <a class="sidebar-nav-item" href="/archive/v1.0.0.zip">Originals</a>
-    <a class="sidebar-nav-item" href="/archive/v1.0.0.zip">Translations</a>
+    <a class="sidebar-nav-item " href="/originals/">Originals</a>
+
+    <a class="sidebar-nav-item " href="/translations/">Translations</a>
+
     <!-- <span class="sidebar-nav-item">Currently v1.0.0</span> -->
   </nav>
 
@@ -97,26 +111,29 @@
   <div class="post">
     <h1 class="post-title">
       <a href=" /translation/2017/03/20/what-Is-meta-class/">
-        在Objectivce-C中,什么是meta-class
+        Objectivce-C中的meta-class是什么
       </a>
     </h1>
 
     <span class="post-date">20 Mar 2017</span>
-    <p>翻译自:<a href="http://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html">What is a meta-class in Objective-C :Matt Gallagher</a></p>
+    <p><em>Copyright 2010 Matt Gallagher: <a href="https://cocoawithlove.com">cocoawithlove.com</a>.</em></p>
 
-<p>在这篇文章中，我会着重讲解在Objective-C中的一个陌生的概念 - meta-class。Objective-C中，每个类都有一个与之关联的<code>meta-class</code>，但正因为你很少直接的去使用它，它才会这么神秘。我将从如何在runtime机制下创建一个class说起。通过检查创建的这个”class pair”，我将解释什么是meta-class，也会解释一些普遍的问题：在Objective-C中，它对一个对象或者一个类有着怎样的意义?</p>
+<p>原文: <a href="http://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html">What is a meta-class in Objective-C?</a>. 本文由原作者授权翻译</p>
+
+<p>在这篇文章中，我着重讲解Objective-C中的一个陌生的概念 - meta-class。Objective-C中的每个类都有一个与之关联的<code>meta-class</code>，但因为你很少直接使用它，它才会对你显得如此神秘。我将从如何使用runtime机制创建一个类说起。通过检查 objc_allocateClassPair 函数创建出的 “class pair” ，我将解释什么是meta-class，也会解释一些普遍存在的问题：在Objective-C中，meta-class 对一个对象或者一个类有着怎样的意义?</p>
 
 
   </div>
   
 </div>
 
+<!-- 翻页 -->
 <div class="pagination">
   
-    <span class="pagination-item older">Older</span>
+    <span class="pagination-item older">下一页</span>
   
   
-    <span class="pagination-item newer">Newer</span>
+    <span class="pagination-item newer">上一页</span>
   
 </div>
 

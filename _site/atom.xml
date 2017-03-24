@@ -4,7 +4,7 @@
  <title>Silver's</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2017-03-21T13:17:31+08:00</updated>
+ <updated>2017-03-24T21:47:47+08:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Silver</name>
@@ -13,22 +13,24 @@
 
  
  <entry>
-   <title>在Objectivce-C中,什么是meta-class</title>
+   <title>Objectivce-C中的meta-class是什么</title>
    <link href="http://localhost:4000/translation/2017/03/20/what-Is-meta-class/"/>
    <updated>2017-03-20T00:00:00+08:00</updated>
    <id>http://localhost:4000/translation/2017/03/20/what-Is-meta-class</id>
-   <content type="html">&lt;p&gt;翻译自:&lt;a href=&quot;http://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html&quot;&gt;What is a meta-class in Objective-C :Matt Gallagher&lt;/a&gt;&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;em&gt;Copyright 2010 Matt Gallagher: &lt;a href=&quot;https://cocoawithlove.com&quot;&gt;cocoawithlove.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 
-&lt;p&gt;在这篇文章中，我会着重讲解在Objective-C中的一个陌生的概念 - meta-class。Objective-C中，每个类都有一个与之关联的&lt;code&gt;meta-class&lt;/code&gt;，但正因为你很少直接的去使用它，它才会这么神秘。我将从如何在runtime机制下创建一个class说起。通过检查创建的这个”class pair”，我将解释什么是meta-class，也会解释一些普遍的问题：在Objective-C中，它对一个对象或者一个类有着怎样的意义?
+&lt;p&gt;原文: &lt;a href=&quot;http://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html&quot;&gt;What is a meta-class in Objective-C?&lt;/a&gt;. 本文由原作者授权翻译&lt;/p&gt;
+
+&lt;p&gt;在这篇文章中，我着重讲解Objective-C中的一个陌生的概念 - meta-class。Objective-C中的每个类都有一个与之关联的&lt;code&gt;meta-class&lt;/code&gt;，但因为你很少直接使用它，它才会对你显得如此神秘。我将从如何使用runtime机制创建一个类说起。通过检查 objc_allocateClassPair 函数创建出的 “class pair” ，我将解释什么是meta-class，也会解释一些普遍存在的问题：在Objective-C中，meta-class 对一个对象或者一个类有着怎样的意义?
 &lt;!-- more --&gt;&lt;/p&gt;
-&lt;h3 id=&quot;在运行的时候创建一个类&quot;&gt;在运行的时候创建一个类&lt;/h3&gt;
-&lt;p&gt;下面的代码展示了在运行的时候创建一个&lt;code&gt;NSError&lt;/code&gt;的子类，并给它添加了一个方法.&lt;/p&gt;
+&lt;h3 id=&quot;在程序运行的时候创建一个类&quot;&gt;在程序运行的时候创建一个类&lt;/h3&gt;
+&lt;p&gt;在程序运行的时候,下面的代码创建了一个&lt;code&gt;NSError&lt;/code&gt;的子类，并给它添加了一个方法。&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objc&quot; data-lang=&quot;objc&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;newClass&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;objc_allocateClassPair&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;NSError&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;RuntimeErrorSubclass&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;class_addMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;newClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;@selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;IMP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ReportFunction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;v@:&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;objc_registerClassPair&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;newClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;这个方法添加了一个叫&lt;code&gt;ReportFunction&lt;/code&gt;的函数作为它的实现,它的定义如下:&lt;/p&gt;
+&lt;p&gt;这个被添加的方法使用&lt;code&gt;ReportFunction&lt;/code&gt;函数作为它的实现。&lt;code&gt;ReportFunction&lt;/code&gt;函数的定义如下:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objc&quot; data-lang=&quot;objc&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ReportFunction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;SEL&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -44,49 +46,51 @@
     &lt;span class=&quot;n&quot;&gt;NSLog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;@&amp;quot;NSObject&amp;#39;s meta class is %p&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object_getClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;NSObject&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]));&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;表面上来看,这一切都很简单,在运行时创建一个类只需要这三个简单的步骤:&lt;/p&gt;
+&lt;p&gt;表面上来看,这一切都很简单。&lt;/p&gt;
+
+&lt;p&gt;因为在程序运行的时候创建一个类只需要这三个简单的步骤:&lt;/p&gt;
 &lt;blockquote&gt;
 
   &lt;ol&gt;
-    &lt;li&gt;为&lt;code&gt;class pair&lt;/code&gt;开辟空间(使用&lt;code&gt;objc_allocateClassPair&lt;/code&gt;).&lt;/li&gt;
-    &lt;li&gt;按照添加函数所需要的参数去添加方法和变量(我已经使用了&lt;code&gt;class_addMethod&lt;/code&gt;去添加一个方法)&lt;a href=&quot;https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html&quot;&gt;iOS函数参数类型编码&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;系统注册这个类,以便能够使用它(using &lt;code&gt;objc_registerClassPair&lt;/code&gt;).&lt;/li&gt;
+    &lt;li&gt;为&lt;code&gt;class pair&lt;/code&gt;开辟内存空间(使用&lt;code&gt;objc_allocateClassPair&lt;/code&gt;).&lt;/li&gt;
+    &lt;li&gt;按照函数所需要,去给类添加方法和成员变量(我已经使用&lt;code&gt;class_addMethod&lt;/code&gt;添加了一个方法)&lt;/li&gt;
+    &lt;li&gt;注册这个类,以便能够使用它(使用 &lt;code&gt;objc_registerClassPair&lt;/code&gt;).&lt;/li&gt;
   &lt;/ol&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;但是，现在的问题是：什么是&lt;code&gt;class pair&lt;/code&gt;? &lt;code&gt;objc_allocateClassPair&lt;/code&gt;函数只返回了一个值: the class。那这个&lt;code&gt;class pair&lt;/code&gt;的另一半又在哪呢？我相信你已经猜到了:这个&lt;code&gt;class pair&lt;/code&gt;的另一半就是&lt;code&gt;meta-class&lt;/code&gt;（它是这篇文章的标题），但我需要给你解释它是什么和为什么你需要它，我将说明在Objectivce-C中的类和对象的某些来历。&lt;/p&gt;
+&lt;p&gt;但是，现在的问题是：什么是&lt;code&gt;class pair&lt;/code&gt;? &lt;code&gt;objc_allocateClassPair&lt;/code&gt;函数只返回了一个值: 类。那这个&lt;code&gt;class pair&lt;/code&gt;的另一半又在哪呢？我相信你已经猜到了:&lt;code&gt;class pair&lt;/code&gt;的另一半就是&lt;code&gt;meta-class&lt;/code&gt;（它是这篇文章的标题），但我需要向你解释它是什么,为什么你需要它，我将会给出一些Objectivce-C中的类和对象的背景。&lt;/p&gt;
 
-&lt;h3 id=&quot;从一个结构体成为一个对象需要些什么&quot;&gt;从一个结构体成为一个对象，需要些什么?&lt;/h3&gt;
+&lt;h3 id=&quot;让一个数据结构变成一个对象需要些什么&quot;&gt;让一个数据结构变成一个对象，需要些什么?&lt;/h3&gt;
 &lt;p&gt;每一个对象都有一个类，这是面对对象的基本概念，但是在Objectivce-C中，它也是数据的基本组成部分(每个对象都拥有一个指向类结构体的指针)。任何 拥有一个指向在正确位置的类的指针 的数据结构都可以被视为一个对象。&lt;/p&gt;
 
 &lt;p&gt;在Objectivce-C中，一个对象的类被一个&lt;code&gt;isa&lt;/code&gt;指针所决定。这个&lt;code&gt;isa&lt;/code&gt;指针指向对象的类。&lt;/p&gt;
 
-&lt;p&gt;实际上，Objectivce-C中，一个对象的基础定义是这样的:&lt;/p&gt;
+&lt;p&gt;实际上，在Objectivce-C中，一个对象的基础定义是这样的:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objc&quot; data-lang=&quot;objc&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;objc_object&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;kt&quot;&gt;Class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;👆这个定义说明:任何一个以指向一个&lt;code&gt;Class&lt;/code&gt;的指针开始的结构体都能够被视为一个对象。&lt;/p&gt;
+&lt;p&gt;👆这个定义说明:任何一个 以指向一个&lt;code&gt;Class&lt;/code&gt;结构体的指针 开始的结构体都能够被视为一个对象。&lt;/p&gt;
 
-&lt;p&gt;在Objectivce-C中，对象最重要的功能就是 我们能够给它发送消息:&lt;/p&gt;
+&lt;p&gt;在Objectivce-C中，对象最重要的功能就是我们能够给它们发送消息:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objc&quot; data-lang=&quot;objc&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;@&amp;quot;stringValue&amp;quot;&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;writeToFile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;@&amp;quot;/file.txt&amp;quot;&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;atomically&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;YES&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;encoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSUTF8StringEncoding&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;它会正常执行,因为当你向一个OC对象发送一个消息的时候(像这里的&lt;code&gt;NSCFString&lt;/code&gt;),这时runtime机制沿着对象的&lt;code&gt;isa&lt;/code&gt;指针去获取对象的&lt;code&gt;Class&lt;/code&gt;(在这里是&lt;code&gt;NSCFString&lt;/code&gt;类)。接着,这个&lt;code&gt;Class&lt;/code&gt;包含了一个适用于该类的所有对象的方法列表(所有对象方法的列表)和一个指向超类的指针(用于查找继承的方法)。由于获取到了对象对应的&lt;code&gt;Class&lt;/code&gt;,这时运行时机制会为了匹配消息选择器，浏览在&lt;code&gt;Class&lt;/code&gt;和&lt;code&gt;superclass&lt;/code&gt;上的方法列表(在上述情况下,&lt;code&gt;writeToFile:atomically:encoding:error&lt;/code&gt;在&lt;code&gt;NSString&lt;/code&gt;上)。接着,runtime机制会执行这个方法对应的函数(&lt;code&gt;IMP&lt;/code&gt;)。&lt;/p&gt;
+&lt;p&gt;这段代码之所以会执行,是因为当你向一个OC对象发送一个消息的时候(像这里的&lt;code&gt;NSCFString&lt;/code&gt;),runtime机制会沿着对象的&lt;code&gt;isa&lt;/code&gt;指针去获取对象的&lt;code&gt;Class&lt;/code&gt;(在这里是&lt;code&gt;NSCFString&lt;/code&gt;类)。接着,这个&lt;code&gt;Class&lt;/code&gt;包含了一个适用于该类的所有对象的方法列表(拥有所有对象方法的列表)和一个指向超类的指针(用于查阅继承的方法)。由于获取到了对象对应的&lt;code&gt;Class&lt;/code&gt;,这时,运行时机制会为了找到一个和消息选择器匹配的方法，浏览在&lt;code&gt;Class&lt;/code&gt;和&lt;code&gt;superclass&lt;/code&gt;上的方法列表(在上述情况下,&lt;code&gt;writeToFile:atomically:encoding:error&lt;/code&gt;是在&lt;code&gt;NSString&lt;/code&gt;的方法列表上的)。接着,runtime机制会执行这个方法对应的实现函数(&lt;code&gt;IMP&lt;/code&gt;)。&lt;/p&gt;
 
-&lt;p&gt;重要的一点是这个&lt;code&gt;Class&lt;/code&gt;定义了哪些消息是你能够发送给对象的。&lt;/p&gt;
+&lt;p&gt;重要的一点是: &lt;code&gt;Class&lt;/code&gt;定义了你能够发送给对象的消息(对象方法列表)。&lt;/p&gt;
 
 &lt;h3 id=&quot;什么是meta-class&quot;&gt;什么是&lt;code&gt;meta-Class&lt;/code&gt;?&lt;/h3&gt;
-&lt;p&gt;现在,像你可能已经知道的一样,一个&lt;code&gt;Class&lt;/code&gt;在Objectivce-C中也是一个对象.这个就意味着你能够给你一个&lt;code&gt;Class&lt;/code&gt;发送消息。&lt;/p&gt;
+&lt;p&gt;现在,像你所知道的: 一个&lt;code&gt;Class&lt;/code&gt;在Objectivce-C中也是一个对象。这个就意味着你也能够给一个&lt;code&gt;Class&lt;/code&gt;发送消息。&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objc&quot; data-lang=&quot;objc&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSStringEncoding&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;defaultStringEncoding&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;NSString&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;defaultStringEncoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;在这里,&lt;code&gt;defaultStringEncoding&lt;/code&gt;被发送给了&lt;code&gt;NSString&lt;/code&gt;类.&lt;/p&gt;
 
-&lt;p&gt;它也会正常执行,因为在Objectivce-C中每一个&lt;code&gt;Class&lt;/code&gt;其本质上也是一个对象.这就意味着&lt;code&gt;Class&lt;/code&gt;结构体必须是以一个&lt;code&gt;isa&lt;/code&gt;指针开始的,以至于它与我上面显示的&lt;code&gt;objc_object&lt;/code&gt;结构体是二进制兼容的并且下一个在结构体中的字段必须是一个指向&lt;code&gt;superclass&lt;/code&gt;的指针(或者对于基本类来说就是nil).&lt;/p&gt;
+&lt;p&gt;这段代码之所以会执行，是因为在Objectivce-C中每一个&lt;code&gt;Class&lt;/code&gt;其本质上也是一个对象.这就意味着&lt;code&gt;Class&lt;/code&gt;结构体必须是以一个&lt;code&gt;isa&lt;/code&gt;指针开始的结构体,以至于它与我上面显示的&lt;code&gt;objc_object&lt;/code&gt;结构体是二进制兼容的,并且下一个在结构体中的字段必须是一个指向&lt;code&gt;superclass&lt;/code&gt;的指针(或者对于基本类来说就是nil).&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://www.cocoawithlove.com/2010/01/getting-subclasses-of-objective-c-class.html&quot;&gt;像我上周展示的一样&lt;/a&gt;,这里有几种定义&lt;code&gt;Class&lt;/code&gt;的方式,这取决于你所运行的&lt;code&gt;runtime&lt;/code&gt;的版本,但是,它们都是以&lt;code&gt;isa&lt;/code&gt;字段开头,后跟一个&lt;code&gt;superclass&lt;/code&gt;字段。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.cocoawithlove.com/2010/01/getting-subclasses-of-objective-c-class.html&quot;&gt;像我上周展示的一样&lt;/a&gt;,这里有几种不同定义&lt;code&gt;Class&lt;/code&gt;的方式,这取决于你所运行的&lt;code&gt;runtime&lt;/code&gt;的版本,但是,它们都是以一个&lt;code&gt;isa&lt;/code&gt;字段开头,后跟一个&lt;code&gt;superclass&lt;/code&gt;字段。&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objc&quot; data-lang=&quot;objc&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;objc_class&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;objc_class&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -95,23 +99,25 @@
     &lt;span class=&quot;cm&quot;&gt;/* followed by runtime specific details... */&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;但是,为了让我们能在&lt;code&gt;Class&lt;/code&gt;上执行一个方法,&lt;code&gt;Class&lt;/code&gt;的&lt;code&gt;isa&lt;/code&gt;指针必须指向一个&lt;code&gt;Class&lt;/code&gt;结构体并且这个&lt;code&gt;Class&lt;/code&gt;结构体必须包含了我们能够在类上执行方法的方法列表(类方法列表).&lt;/p&gt;
+&lt;p&gt;但是,为了让我们能在&lt;code&gt;Class&lt;/code&gt;上执行一个方法,&lt;code&gt;Class&lt;/code&gt;的&lt;code&gt;isa&lt;/code&gt;指针必须指向一个&lt;code&gt;Class&lt;/code&gt;结构体, 并且这个&lt;code&gt;Class&lt;/code&gt;结构体必须包含了能够让我们在类上执行方法的方法列表(类方法列表).&lt;/p&gt;
 
-&lt;p&gt;这就导出了&lt;code&gt;meta-class&lt;/code&gt;的定义: &lt;code&gt;meta-class&lt;/code&gt;是一个&lt;code&gt;Class&lt;/code&gt;对象的类.&lt;/p&gt;
+&lt;p&gt;这就引出了&lt;code&gt;meta-class&lt;/code&gt;的定义: &lt;code&gt;meta-class&lt;/code&gt;是一个&lt;code&gt;Class&lt;/code&gt;对象的类.&lt;/p&gt;
 
 &lt;p&gt;简而言之:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;当你给一个&lt;code&gt;对象&lt;/code&gt;发送消息的时候,runtime机制会在对象的&lt;code&gt;Class&lt;/code&gt;的方法列表中查找该消息.&lt;/li&gt;
-  &lt;li&gt;当你给一个&lt;code&gt;类&lt;/code&gt;发送消息的时候,runtime机制会在类的&lt;code&gt;meta-class&lt;/code&gt;的方法列表中查找该消息.&lt;/li&gt;
+  &lt;li&gt;当你给一个&lt;code&gt;对象&lt;/code&gt;发送消息的时候,runtime机制会在对象的类对象的方法列表中查找该消息.&lt;/li&gt;
+  &lt;li&gt;当你给一个&lt;code&gt;类&lt;/code&gt;发送消息的时候,runtime机制会在类对象的&lt;code&gt;meta-class&lt;/code&gt;的方法列表中查找该消息.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;code&gt;meta-class&lt;/code&gt;是必须存在的,因为它为一个&lt;code&gt;Class&lt;/code&gt;保存了该类的类方法。
-对于每一个&lt;code&gt;Class&lt;/code&gt;来说,必须有一个特殊的&lt;code&gt;meta-class&lt;/code&gt;,因为每一个&lt;code&gt;Class&lt;/code&gt;都有一个潜在的特殊的类方法列表.&lt;/p&gt;
+对于每一个&lt;code&gt;Class&lt;/code&gt;来说,都必须有一个独一无二的&lt;code&gt;meta-class&lt;/code&gt;,因为每一个&lt;code&gt;Class&lt;/code&gt;都有一个可能独一无二的类方法列表.&lt;/p&gt;
 
-&lt;h3 id=&quot;meta-class的类的是什么呢&quot;&gt;&lt;code&gt;meta-class&lt;/code&gt;的类的是什么呢?&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;meta-class&lt;/code&gt;像之前的&lt;code&gt;Class&lt;/code&gt;一样,它也是一个对象.这就意味着你同样能够在它之上执行方法.这理所当然的认为着它也必须有一个&lt;code&gt;Class&lt;/code&gt;.
-所有的&lt;code&gt;meta-class&lt;/code&gt;使用基础类的&lt;code&gt;meta-class&lt;/code&gt;(在它们继承体系的顶层的类的&lt;code&gt;meta-class&lt;/code&gt;)作为它们的&lt;code&gt;Class&lt;/code&gt;.这就意味着所有继承&lt;code&gt;NSObject&lt;/code&gt;的类的&lt;code&gt;meta-class&lt;/code&gt;的&lt;code&gt;Class&lt;/code&gt;(&lt;code&gt;isa&lt;/code&gt;指针)是&lt;code&gt;NSObject&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;.
-遵循这样的规则:所有的&lt;code&gt;meta-class&lt;/code&gt;都使用基本\类的&lt;code&gt;meta-class&lt;/code&gt;作为它们的&lt;code&gt;class&lt;/code&gt;,任何基础的&lt;code&gt;meta-class&lt;/code&gt;的&lt;code&gt;Class&lt;/code&gt;都将是它们自身(它们的&lt;code&gt;isa&lt;/code&gt;始终指向自身).这就意味着&lt;code&gt;NSObject&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;的&lt;code&gt;isa&lt;/code&gt;指针是指向它自身的(它是它自身的实例).&lt;/p&gt;
+&lt;h3 id=&quot;那meta-class的类的是什么呢&quot;&gt;那&lt;code&gt;meta-class&lt;/code&gt;的类的是什么呢?&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;meta-class&lt;/code&gt;像之前的&lt;code&gt;Class&lt;/code&gt;一样,它也是一个对象.这就意味着你同样能够在它之上执行方法。那它也理所当然的必须属于一个类(&lt;code&gt;isa&lt;/code&gt;指针)。&lt;/p&gt;
+
+&lt;p&gt;所有的&lt;code&gt;meta-class&lt;/code&gt;使用基础类的&lt;code&gt;meta-class&lt;/code&gt;(在它们继承体系的顶层的类的&lt;code&gt;meta-class&lt;/code&gt;)作为它们的类。这就意味着所有继承&lt;code&gt;NSObject&lt;/code&gt;的类的&lt;code&gt;meta-class&lt;/code&gt;的&lt;code&gt;Class&lt;/code&gt;(&lt;code&gt;isa&lt;/code&gt;指针)是&lt;code&gt;NSObject&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;遵循这样的规则:所有的&lt;code&gt;meta-class&lt;/code&gt;都使用基本类的&lt;code&gt;meta-class&lt;/code&gt;作为它们的类(&lt;code&gt;isa&lt;/code&gt;指针),任何基本(顶层)的&lt;code&gt;meta-class&lt;/code&gt;的&lt;code&gt;Class&lt;/code&gt;(&lt;code&gt;isa&lt;/code&gt;指针)都将是它们自身(它们的&lt;code&gt;isa&lt;/code&gt;始终指向自身).这就意味着&lt;code&gt;NSObject&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;的&lt;code&gt;isa&lt;/code&gt;指针是指向它自身的(它是它自身的实例).&lt;/p&gt;
 
 &lt;h3 id=&quot;meta-class和class的继承&quot;&gt;&lt;code&gt;meta-class&lt;/code&gt;和&lt;code&gt;Class&lt;/code&gt;的继承&lt;/h3&gt;
 &lt;p&gt;相同的是&lt;code&gt;Class&lt;/code&gt;使用&lt;code&gt;super_class&lt;/code&gt;指针指向其父类&lt;code&gt;Class&lt;/code&gt;,&lt;code&gt;meta-class&lt;/code&gt;使用自身的&lt;code&gt;super_class&lt;/code&gt;指针指向&lt;code&gt;Class&lt;/code&gt;的&lt;code&gt;super_class&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;。(此处&lt;code&gt;meta-class-&amp;gt;super_class&lt;/code&gt; = &lt;code&gt;class-&amp;gt;super_class-&amp;gt;meta-class&lt;/code&gt;)&lt;/p&gt;
@@ -179,6 +185,8 @@
 &lt;/blockquote&gt;
 
 &lt;p&gt;所有的&lt;code&gt;meta-class&lt;/code&gt;都使用基类的&lt;code&gt;meta-class&lt;/code&gt;(在&lt;code&gt;NSObject&lt;/code&gt;继承体系下,是&lt;code&gt;NSObject&lt;/code&gt;的&lt;code&gt;meta-class&lt;/code&gt;)作为他们的类,也包括了在运行时机制中唯一自定义的基础级的&lt;code&gt;meta-class&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html&quot;&gt;iOS类型编码&lt;/a&gt;&lt;/p&gt;
 </content>
  </entry>
  
