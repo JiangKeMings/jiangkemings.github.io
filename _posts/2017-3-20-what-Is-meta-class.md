@@ -103,7 +103,7 @@ struct objc_class {
 ### 那`meta-class`的类的是什么呢?
 `meta-class`像之前的`Class`一样,它也是一个对象.这就意味着你同样能够在它之上执行方法。那它也理所当然的必须属于一个类(`isa`指针)。
 
-所有的`meta-class`使用基础类的`meta-class`(在它们继承体系的顶层的类的`meta-class`)作为它们的类。这就意味着所有继承`NSObject`的类的`meta-class`的`Class`(`isa`指针)是`NSObject`的`meta-class`.
+所有的`meta-class`使用基础类的`meta-class`(在它们继承体系的顶层的类的`meta-class`)作为它们的类。这就意味着所有继承自`NSObject`的类的`meta-class`的`Class`(`isa`指针)是`NSObject`的`meta-class`.
 
 遵循这样的规则:所有的`meta-class`都使用基本类的`meta-class`作为它们的类(`isa`指针),任何基本(顶层)的`meta-class`的`Class`(`isa`指针)都将是它们自身(它们的`isa`始终指向自身).这就意味着`NSObject`的`meta-class`的`isa`指针是指向它自身的(它是它自身的实例).
 
@@ -116,7 +116,6 @@ struct objc_class {
 
  对于所有在`NSObject`体系下的实例,类和meta-class的来说，`NSObject`的所有的对象方法对它们来说都是有效的。对于类和meta-class来说,所有的`NSObject`的类方法是有效的。
 
- ![picture]({{site.baseurl}}/assets/translation/instance-class-meta_class-01.png)
 
 ### 通过实验证明以上观点
 为了证明以上观点,让我们看看我在文章开头给出的`ReportFunction`函数的输出吧.这个函数的目的是沿着`isa`指针并且打印它找到的是什么.
@@ -171,4 +170,11 @@ NSObject's meta class is 0x7fff71038480
 
 所有的`meta-class`都使用基类的`meta-class`(在`NSObject`继承体系下,是`NSObject`的`meta-class`)作为他们的类,也包括了在运行时机制中唯一自定义的基础级的`meta-class`.
 
+---
+
+补充:
+
 [iOS类型编码](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html)
+> id Class meta-class 之间的关系
+
+![picture]({{site.baseurl}}/assets/translation/instance-class-meta_class-01.png)
