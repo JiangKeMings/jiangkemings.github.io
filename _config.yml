@@ -15,7 +15,7 @@ kramdown:
 title:               Silver's
 tagline:             'Blog'
 description:         'Talk is cheap,show me the code'
-url:                 http://lanyon.getpoole.com
+# url:                 http://lanyon.getpoole.com
 baseurl:             ''
 paginate:            5
 
