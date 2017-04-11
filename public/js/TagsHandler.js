@@ -62,7 +62,7 @@ function getTagsWithdata(data){
  *   @param dataStr     : JSON字符串
  *   @param containerId : 承载tags链接的容器Id,如果为空,不执行加入操作
  *   @param siteUrl     : 网站url地址
- *   @param isGloba     : 是否是查询了全局的tag
+ *   @param isGloba     : 是否是查询了全局的tag,并设置了AllArticles变量
  *   @return tagsArr    : 解析出的标签数组
 **/
 function handleJSON(dataStr,containerId,siteUrl,isGloba){

@@ -51,6 +51,15 @@ try {
   }
   document.getElementById("aimArticles").innerHTML += htmlstr;
 } catch (e) {
-  document.write('暂未完成~');
+  if (AllArticles == null) {
+     document.write("所有文章全局变量为空");
+     return;
+  }
+  var htmlstr = new String();
+  for (var index in AllArticles) {
+     var  article = AllArticles[index];
+      htmlstr += '<div class="post" id = "titlebody" ><h1 class="post-title"><a href= ' + article.url + '>' + article.title + '</a></h1><span class="post-date">' +  article.date +'</span></div>';
+  }
+  document.getElementById("aimArticles").innerHTML += htmlstr;
 }
 </script>
