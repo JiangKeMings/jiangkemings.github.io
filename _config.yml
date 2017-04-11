@@ -4,7 +4,12 @@
 permalink:           pretty
 # relative_permalinks: true
 # highlighter:         pygments
-highlighter:         rouge
+# highlighter:         rouge
+highlight:           true
+markdown:            kramdown
+  kramdown:
+    input: GFM
+
 # Setup
 title:               Silver's
 tagline:             'Blog'
