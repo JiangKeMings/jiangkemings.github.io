@@ -3,7 +3,8 @@
 # Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
 # relative_permalinks: true
-highlighter:         pygments
+# highlighter:         pygments
+# highlighter:         rouge
 # Setup
 title:               Silver's
 tagline:             'Blog'
