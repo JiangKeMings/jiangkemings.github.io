@@ -4,6 +4,7 @@ title: Home
 ---
 
 <div class="posts">
+
   {% for post in paginator.posts %}
   <div class="post">
     <h1 class="post-title">
@@ -11,9 +12,20 @@ title: Home
         {{ post.title }}
       </a>
     </h1>
+    <span class="post-date" id = "{{post.date}}">{{ post.date | date_to_string }}</span>
 
-    <span class="post-date">{{ post.date | date_to_string }}</span>
+    <!-- 获取标签 -->
+    <script type="text/javascript">
+    var str = '[\
+                  { \
+                    "title" : "{{ post.title }}" ,\
+                    "tags"  : "{{ post.tags }}" \
+                  }\
+               ]'
+    handleJSON(str,'{{ post.date }}','{{site.url}}',false);
+    </script>
     {{ post.excerpt }}
+
   </div>
   {% endfor %}
 </div>
@@ -35,3 +47,8 @@ title: Home
     <span class="pagination-item newer">上一页</span>
   {% endif %}
 </div>
+
+<!-- <script type="text/javascript">
+var str = '{ {% for post in site.posts %} "{{ post.title }}" : {"tags":"{{ post.tags }}"}  {% if forloop.last == false %}, {% endif %}{% endfor %} }'
+handleJSON(str);
+</script> -->

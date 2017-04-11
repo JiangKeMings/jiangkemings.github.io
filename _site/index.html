@@ -15,10 +15,13 @@
   </title>
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/pygments.css">
+  <!-- <link rel="stylesheet" href="/pygments.css"> -->
+  <script src="/public/js/TagsHandler.js"></script>
+  <link rel="stylesheet" href="/public/css/syntax.css">
   <link rel="stylesheet" href="/public/css/poole.css">
-  <!-- <link rel="stylesheet" href="/public/css/syntax.css"> -->
   <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="/public/css/Custom.css">
+
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
 
   <!-- Icons -->
@@ -58,10 +61,6 @@
     
       
         
-      
-    
-      
-        
           <a class="sidebar-nav-item" href="/about/">About</a>
         
       
@@ -79,13 +78,18 @@
       
         
       
+    
+      
+        
+      
      -->
 
     <a class="sidebar-nav-item " href="/originals/">Originals</a>
 
-    <a class="sidebar-nav-item " href="/translations/">Translations</a>
+    <a class="sidebar-nav-item " href="/translation/">Translations</a>
 
     <a class="sidebar-nav-item " href="/Note/">Note</a>
+    <a class="sidebar-nav-item " href="/tags/">Tags</a>
 
     <!-- <span class="sidebar-nav-item">Currently v1.0.0</span> -->
   </nav>
@@ -113,6 +117,7 @@
       <div class="container content">
       <!-- <div> -->
         <div class="posts">
+
   
   <div class="post">
     <h1 class="post-title">
@@ -120,36 +125,47 @@
         RunLoop学习笔记
       </a>
     </h1>
+    <span class="post-date" id = "2017-04-09 00:00:00 +0800">09 Apr 2017</span>
 
-    <span class="post-date">09 Apr 2017</span>
+    <!-- 获取标签 -->
+    <script type="text/javascript">
+    var str = '[\
+                  { \
+                    "title" : "RunLoop学习笔记" ,\
+                    "tags"  : "Objective-C,RunLoop" \
+                  }\
+               ]'
+    handleJSON(str,'2017-04-09 00:00:00 +0800','http://localhost:4000',false);
+    </script>
     <p><a href="http://blog.ibireme.com/2015/05/18/runloop/">图片和有些内容出自 - 深入理解RunLoop</a></p>
 
 <h3 id="runloop的内部组成">RunLoop的内部组成</h3>
 
 <p><img src="/assets/note/runLoop_note_0.png" alt="picture" /></p>
 
-<figure class="highlight"><pre><code class="language-objc" data-lang="objc"><span></span><span class="n">CFRunLoopRef</span>
+<figure class="highlight"><pre><code class="language-objc" data-lang="objc"><span class="n">CFRunLoopRef</span>
    <span class="o">|</span> <span class="n">CFRunLoopModeRef</span>
 	   <span class="o">|</span> <span class="n">CFRunLoopSourceRef</span>
 	   <span class="o">|</span> <span class="n">CFRunLoopTimerRef</span>
        <span class="o">|</span> <span class="n">CFRunLoopObserverRef</span></code></pre></figure>
 
-<figure class="highlight"><pre><code class="language-objc" data-lang="objc"><span></span><span class="k">struct</span> <span class="n">__CFRunLoopMode</span> <span class="p">{</span>
-    <span class="n">CFStringRef</span> <span class="n">_name</span><span class="p">;</span>            <span class="c1">// Mode Name, 例如 @&quot;kCFRunLoopDefaultMode&quot;</span>
-    <span class="n">CFMutableSetRef</span> <span class="n">_sources0</span><span class="p">;</span>    <span class="c1">// Set</span>
-    <span class="n">CFMutableSetRef</span> <span class="n">_sources1</span><span class="p">;</span>    <span class="c1">// Set</span>
-    <span class="n">CFMutableArrayRef</span> <span class="n">_observers</span><span class="p">;</span> <span class="c1">// Array</span>
-    <span class="n">CFMutableArrayRef</span> <span class="n">_timers</span><span class="p">;</span>    <span class="c1">// Array</span>
-    <span class="p">...</span>
+<figure class="highlight"><pre><code class="language-objc" data-lang="objc"><span class="k">struct</span> <span class="n">__CFRunLoopMode</span> <span class="p">{</span>
+    <span class="n">CFStringRef</span> <span class="n">_name</span><span class="p">;</span>            <span class="c1">// Mode Name, 例如 @"kCFRunLoopDefaultMode"
+</span>    <span class="n">CFMutableSetRef</span> <span class="n">_sources0</span><span class="p">;</span>    <span class="c1">// Set
+</span>    <span class="n">CFMutableSetRef</span> <span class="n">_sources1</span><span class="p">;</span>    <span class="c1">// Set
+</span>    <span class="n">CFMutableArrayRef</span> <span class="n">_observers</span><span class="p">;</span> <span class="c1">// Array
+</span>    <span class="n">CFMutableArrayRef</span> <span class="n">_timers</span><span class="p">;</span>    <span class="c1">// Array
+</span>    <span class="p">...</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="bp">__CFRunLoop</span> <span class="p">{</span>
-    <span class="n">CFMutableSetRef</span> <span class="n">_commonModes</span><span class="p">;</span>     <span class="c1">// Set</span>
-    <span class="n">CFMutableSetRef</span> <span class="n">_commonModeItems</span><span class="p">;</span> <span class="c1">// Set&lt;Source/Observer/Timer&gt;</span>
-    <span class="n">CFRunLoopModeRef</span> <span class="n">_currentMode</span><span class="p">;</span>    <span class="c1">// Current Runloop Mode</span>
-    <span class="n">CFMutableSetRef</span> <span class="n">_modes</span><span class="p">;</span>           <span class="c1">// Set</span>
-    <span class="p">...</span>
+<span class="k">struct</span> <span class="n">__CFRunLoop</span> <span class="p">{</span>
+    <span class="n">CFMutableSetRef</span> <span class="n">_commonModes</span><span class="p">;</span>     <span class="c1">// Set
+</span>    <span class="n">CFMutableSetRef</span> <span class="n">_commonModeItems</span><span class="p">;</span> <span class="c1">// Set&lt;Source/Observer/Timer&gt;
+</span>    <span class="n">CFRunLoopModeRef</span> <span class="n">_currentMode</span><span class="p">;</span>    <span class="c1">// Current Runloop Mode
+</span>    <span class="n">CFMutableSetRef</span> <span class="n">_modes</span><span class="p">;</span>           <span class="c1">// Set
+</span>    <span class="p">...</span>
 <span class="p">};</span></code></pre></figure>
+
 
 
   </div>
@@ -160,13 +176,24 @@
         Objectivce-C中的meta-class是什么
       </a>
     </h1>
+    <span class="post-date" id = "2017-03-20 00:00:00 +0800">20 Mar 2017</span>
 
-    <span class="post-date">20 Mar 2017</span>
+    <!-- 获取标签 -->
+    <script type="text/javascript">
+    var str = '[\
+                  { \
+                    "title" : "Objectivce-C中的meta-class是什么" ,\
+                    "tags"  : "Objective-C,Runtime" \
+                  }\
+               ]'
+    handleJSON(str,'2017-03-20 00:00:00 +0800','http://localhost:4000',false);
+    </script>
     <p><em>Copyright 2010 Matt Gallagher: <a href="https://cocoawithlove.com">cocoawithlove.com</a>.</em></p>
 
 <p>原文: <a href="http://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html">What is a meta-class in Objective-C?</a>. 本文由原作者授权翻译</p>
 
-<p>在这篇文章中，我着重讲解Objective-C中的一个陌生的概念 - meta-class。Objective-C中的每个类都有一个与之关联的<code>meta-class</code>，但因为你很少直接使用它，它才会对你显得如此神秘。我将从如何使用runtime机制创建一个类说起。通过检查 objc_allocateClassPair 函数创建出的 “class pair” ，我将解释什么是meta-class，也会解释一些普遍存在的问题：在Objective-C中，meta-class 对一个对象或者一个类有着怎样的意义?</p>
+<p>在这篇文章中，我着重讲解Objective-C中的一个陌生的概念 - meta-class。Objective-C中的每个类都有一个与之关联的<code class="highlighter-rouge">meta-class</code>，但因为你很少直接使用它，它才会对你显得如此神秘。我将从如何使用runtime机制创建一个类说起。通过检查 objc_allocateClassPair 函数创建出的 “class pair” ，我将解释什么是meta-class，也会解释一些普遍存在的问题：在Objective-C中，meta-class 对一个对象或者一个类有着怎样的意义?</p>
+
 
 
   </div>
@@ -182,6 +209,11 @@
     <span class="pagination-item newer">上一页</span>
   
 </div>
+
+<!-- <script type="text/javascript">
+var str = '{  "RunLoop学习笔记" : {"tags":"Objective-C,RunLoop"}  ,  "Objectivce-C中的meta-class是什么" : {"tags":"Objective-C,Runtime"}   }'
+handleJSON(str);
+</script> -->
 
       </div>
     </div>

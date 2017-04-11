@@ -75,6 +75,9 @@ a {
 a strong {
   color: inherit;
 }
+p a{
+  font-size: .8rem;
+}
 /* `:focus` is linked to `:hover` for basic accessibility */
 a:hover,
 a:focus {
@@ -90,15 +93,15 @@ h1, h2, h3, h4, h5, h6 {
   text-rendering: optimizeLegibility;
 }
 h1 {
-  font-size: 2rem;
+  /*font-size: 2rem;*/
 }
 h2 {
   margin-top: 1rem;
-  font-size: 1.5rem;
+  /*font-size: 1.5rem;*/
 }
 h3 {
   margin-top: 1.5rem;
-  font-size: 1.25rem;
+  /*font-size: 1.25rem;*/
 }
 h4, h5, h6 {
   margin-top: 1rem;
@@ -172,9 +175,9 @@ pre {
   display: block;
   margin-top: 0;
   margin-bottom: 1rem;
-  padding: 1rem;
-  font-size: .7rem;
-  line-height: 1.1rem;
+  padding: 0.3rem;
+  font-size: 0.5rem;
+  line-height: .9rem;
   white-space: pre;
   white-space: pre-wrap;
   word-break: break-all;
@@ -191,6 +194,7 @@ pre code {
   border: none;
   background-color: transparent;
 }
+
 /*在p中的code*/
 /*p code{
   font-size: .7rem;
@@ -204,7 +208,10 @@ pre code {
 .highlight pre {
   margin-bottom: 0;
 }
+figure.highlight{
+  margin: 0px;
 
+}
 /* Gist via GitHub Pages */
 .gist .gist-file {
   font-family: Menlo, Monaco, "Courier New", monospace !important;

@@ -1,0 +1,56 @@
+---
+layout: default
+title: Home
+---
+
+<div class="posts" id="aimArticles">
+
+
+</div>
+
+<!-- 获取所有的tags -->
+<script type="text/javascript">
+var str = '[ {% for post in site.posts %}\
+  { "title": "{{ post.title }}"   ,\
+    "tags" : "{{ post.tags  }}"   ,\
+    "url"  : "{{ post.url   }}"   ,\
+    "date" : "{{ post.date | date_to_string }}"\
+   }{% if forloop.last == false %},{% endif %}{% endfor %} ]';
+
+var tagAndURL =  handleJSON(str,null,'{{site.url}}',true);
+
+var tableBox = document.createElement("table");
+tableBox.className = "tableTags";
+var tableHTMLString = new String();
+var index = 0;
+for (var tag in tagAndURL) {
+  var shouldBegin = index % 3 == 0;
+
+  if (shouldBegin) {
+     tableHTMLString += '<tr>';
+  }
+
+  tableHTMLString += '<td><a href=' + tagAndURL[tag] + '>'+ tag +'</a></td>';
+
+  var shouldEnd = (index + 1) % 3 == 0;
+  if (shouldEnd) {
+    tableHTMLString += '</tr>';
+  }
+  index ++;
+}
+tableBox.innerHTML += tableHTMLString;
+document.getElementById("aimArticles").appendChild(tableBox);
+
+try {
+  var params = window.location.href.getParamms();
+  var aimArticles =  searchArticlesWithTag(params.tag);
+  var htmlstr = new String();
+  for (var index in aimArticles) {
+     var  article = aimArticles[index];
+      htmlstr += '<div class="post" id = "titlebody" ><h1 class="post-title"><a href= ' + article.url + '>' + article.title + '</a></h1><span class="post-date">' +  article.date +'</span></div>';
+  }
+  document.getElementById("aimArticles").innerHTML += htmlstr;
+} catch (e) {
+  document.write('暂未完成~');
+}
+</script>

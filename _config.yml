@@ -5,10 +5,11 @@ permalink:           pretty
 # relative_permalinks: true
 # highlighter:         pygments
 # highlighter:         rouge
-highlight:           true
+
 markdown:            kramdown
-  kramdown:
+kramdown:
     input: GFM
+    syntax_highlighter: rouge
 
 # Setup
 title:               Silver's

@@ -4,10 +4,20 @@ layout: default
 
 <div class="post">
   <h1 class="post-title">{{ page.title }}</h1>
-  <span class="post-date">{{ page.date | date_to_string }}</span>
-  <span class="post-date">{{ page.tags }}</span>
+  <span class="post-date" id = "{{ page.date }}" >{{ page.date | date_to_string }}</span>
+
+  <script type="text/javascript">
+  var str = '[ \
+                {\
+                   "tags" : "{{ page.tags }}" \
+                 }\
+             ]'
+  handleJSON(str,'{{ page.date }}','{{site.url}}',false);
+  </script>
+
   {{ content }}
 </div>
+
 
 <div class="related">
   <h2>相关文章</h2>

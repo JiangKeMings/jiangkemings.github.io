@@ -1,0 +1,10 @@
+.tableTags{
+  margin-top: 6rem;
+  margin-bottom : 6rem;
+  background-color: inherit;
+}
+.tableTags tbody tr td, tbody tr th{
+  text-align: center;
+  background-color: white;
+  border-color: white;
+}
