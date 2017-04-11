@@ -53,7 +53,7 @@ try {
 } catch (e) {
   if (AllArticles == null) {
      document.write("所有文章全局变量为空");
-     return;
+     throw e;
   }
   var htmlstr = new String();
   for (var index in AllArticles) {
