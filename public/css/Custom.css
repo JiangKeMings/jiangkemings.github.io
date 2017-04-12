@@ -1,10 +1,21 @@
 .tableTags{
   margin-top: 6rem;
-  margin-bottom : 6rem;
+  margin-bottom: 6rem;
   background-color: inherit;
 }
+
 .tableTags tbody tr td, tbody tr th{
   text-align: center;
   background-color: white;
   border-color: white;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.tag{
+   padding: .5rem;
+}
+.selectTag{
+    background-color: #e5e5e5;
+    border-radius: 1rem;
+    padding: .5rem;
 }
