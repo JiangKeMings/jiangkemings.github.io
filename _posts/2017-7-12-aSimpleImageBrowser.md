@@ -1,10 +1,10 @@
 ---
 layout: post
 title: 一个简单的图片浏览器
-category: originals
+category: original
 tags: iOS,Objective-C
 ---
-
+![picture]({{site.baseurl}}/assets/original/simpleImageBrowser.gif)
 [GitHub地址](https://github.com/SilverJkm/JMImageBrowser)
 
 {% highlight objc %}
@@ -42,6 +42,8 @@ tags: iOS,Objective-C
 	* 对于结束动画，同样需要一个相对于window坐标系的Rect来作为动画的结束frame。
 	* 使用rectBlock来返回相应的Rect
 	* 坐标转换的方法 : `convertRect: toView:` ，将第二参数设置为nil，将默认转换到当前window的坐标系中
+
+<!-- more -->
 
 {% highlight objc %}
 JMImageBrowser *vc = [[JMImageBrowser alloc]initWithUrls:originalArr index:selectIndex rectBlock:^CGRect(NSUInteger index) {
@@ -147,7 +149,7 @@ JMImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifie
     return cell;
 {% endhighlight objc %}
 
-###关于进度条和百分比
+### 关于进度条和百分比
 使用自定义CALayer实现动画
 
 {% highlight objc %}

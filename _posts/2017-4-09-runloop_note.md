@@ -1,7 +1,7 @@
 ---
 layout: post
 title: RunLoop学习笔记
-category: Note
+category: note
 tags: Objective-C,RunLoop
 ---
 [图片和有些内容出自 - 深入理解RunLoop](http://blog.ibireme.com/2015/05/18/runloop/)

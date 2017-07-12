@@ -61,10 +61,6 @@
     
       
         
-      
-    
-      
-        
           <a class="sidebar-nav-item" href="/about/">About</a>
         
       
@@ -82,13 +78,17 @@
       
         
       
+    
+      
+        
+      
      -->
 
-    <a class="sidebar-nav-item " href="/originals/">Originals</a>
+    <a class="sidebar-nav-item " href="/original/">Original</a>
 
-    <a class="sidebar-nav-item " href="/translation/">Translations</a>
+    <a class="sidebar-nav-item " href="/translation/">Translation</a>
 
-    <a class="sidebar-nav-item " href="/Note/">Note</a>
+    <a class="sidebar-nav-item " href="/note/">Note</a>
     <a class="sidebar-nav-item " href="/tags/">Tags</a>
 
     <!-- <span class="sidebar-nav-item">Currently v1.0.0</span> -->
@@ -118,6 +118,72 @@
       <!-- <div> -->
         <div class="posts">
 
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href=" /original/2017/07/12/aSimpleImageBrowser/">
+        一个简单的图片浏览器
+      </a>
+    </h1>
+    <span class="post-date" id = "2017-07-12 00:00:00 +0800">12 Jul 2017</span>
+
+    <!-- 获取标签 -->
+    <script type="text/javascript">
+    var str = '[\
+                  { \
+                    "title" : "一个简单的图片浏览器" ,\
+                    "tags"  : "iOS,Objective-C" \
+                  }\
+               ]'
+    handleJSON(str,'2017-07-12 00:00:00 +0800','http://localhost:4000',false);
+    </script>
+    <p><img src="/assets/original/simpleImageBrowser.gif" alt="picture" />
+<a href="https://github.com/SilverJkm/JMImageBrowser">GitHub地址</a></p>
+
+<figure class="highlight"><pre><code class="language-objc" data-lang="objc"> <span class="cm">/**
+ 初始化方法
+ @param urls 图片地址数组
+ @param index 选中的位置
+ @param rectBlock 返回动画需要的Rect
+ @param scrollBlock 滚动到新Cell的回调
+ @return JMImageBrowser
+ */</span>
+<span class="k">-</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">initWithUrls</span><span class="p">:(</span><span class="n">NSArray</span> <span class="o">&lt;</span><span class="n">NSString</span> <span class="o">*&gt;*</span><span class="p">)</span><span class="nv">urls</span>
+					   <span class="nf">index</span><span class="p">:(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">index</span>
+				   <span class="nf">rectBlock</span><span class="p">:(</span><span class="n">CGRect</span><span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">NSUInteger</span> <span class="n">index</span><span class="p">))</span><span class="nv">rectBlock</span>
+				 <span class="nf">scrollBlock</span><span class="p">:(</span><span class="n">nullable</span> <span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">NSUInteger</span> <span class="n">index</span><span class="p">))</span><span class="nv">scrollBlock</span><span class="p">;</span></code></pre></figure>
+
+<h3 id="显示和隐藏动画的思路">显示和隐藏动画的思路</h3>
+<ol>
+  <li>使用选中的Index初始化ViewController，并形成VC自身的循环引用</li>
+  <li>将collectionView的offset设置到当前Index</li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-objc" data-lang="objc">  	<span class="n">_cycleSelf</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+      <span class="n">_urls</span> <span class="o">=</span> <span class="n">urls</span><span class="p">;</span>
+      <span class="n">_rectBlock</span> <span class="o">=</span> <span class="n">rectBlock</span><span class="p">;</span>
+      <span class="n">_scrollBlock</span> <span class="o">=</span> <span class="n">scrollBlock</span><span class="p">;</span>
+      <span class="n">self</span><span class="p">.</span><span class="n">currentIndex</span> <span class="o">=</span> <span class="n">index</span><span class="p">;</span>
+      <span class="n">UICollectionViewFlowLayout</span> <span class="o">*</span><span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="n">UICollectionViewFlowLayout</span> <span class="o">*</span><span class="p">)</span><span class="n">_collectionView</span><span class="p">.</span><span class="n">collectionViewLayout</span><span class="p">;</span>
+      <span class="n">_collectionView</span><span class="p">.</span><span class="n">contentOffset</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">layout</span><span class="p">.</span><span class="n">itemSize</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">index</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span></code></pre></figure>
+
+<ol>
+  <li>在VC的ViewWillAppear处，根据是否存在缓存，来决定是否执行动画</li>
+  <li>
+    <p>动画执行时，应该是先用一个黑色的遮罩挡住之前显示的内容，再在其上添加一个ImageView专用来执行开始结束动画。</p>
+
+    <ul>
+      <li>对于开始动画，需要一个相对于window坐标系的Rect来作为动画的起始frame。</li>
+      <li>对于结束动画，同样需要一个相对于window坐标系的Rect来作为动画的结束frame。</li>
+      <li>使用rectBlock来返回相应的Rect</li>
+      <li>坐标转换的方法 : <code class="highlighter-rouge">convertRect: toView:</code> ，将第二参数设置为nil，将默认转换到当前window的坐标系中</li>
+    </ul>
+  </li>
+</ol>
+
+
+
+  </div>
   
   <div class="post">
     <h1 class="post-title">
@@ -211,7 +277,7 @@
 </div>
 
 <!-- <script type="text/javascript">
-var str = '{  "RunLoop学习笔记" : {"tags":"Objective-C,RunLoop"}  ,  "Objectivce-C中的meta-class是什么" : {"tags":"Objective-C,Runtime"}   }'
+var str = '{  "一个简单的图片浏览器" : {"tags":"iOS,Objective-C"}  ,  "RunLoop学习笔记" : {"tags":"Objective-C,RunLoop"}  ,  "Objectivce-C中的meta-class是什么" : {"tags":"Objective-C,Runtime"}   }'
 handleJSON(str);
 </script> -->
 
