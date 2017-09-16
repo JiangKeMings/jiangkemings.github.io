@@ -1,12 +1,12 @@
 ---
 layout: default
-title: Home
+title: tags
 ---
 
 <div class="posts" id="aimArticles">
 
-<table class="tableTags" id="tags">
-</table>
+<div class="tagsPanel" id="tags">
+</div>
 
 </div>
 
@@ -23,21 +23,8 @@ var tagAndURL =  handleJSON(str,null,'{{site.url}}',true);
 
 var tableBox = document.getElementById("tags");
 var tableHTMLString = new String();
-var index = 0;
 for (var tag in tagAndURL) {
-  var shouldBegin = index % 3 == 0;
-
-  if (shouldBegin) {
-     tableHTMLString += '<tr>';
-  }
-
-  tableHTMLString += '<td><a href="' + tagAndURL[tag] + '" id= '+ tag + ' class= "tag">'+ tag +'</a></td>';
-
-  var shouldEnd = (index + 1) % 3 == 0;
-  if (shouldEnd) {
-    tableHTMLString += '</tr>';
-  }
-  index ++;
+  tableHTMLString += '<a href="' + tagAndURL[tag] + '" id= '+ tag + ' class= "tag">'+ tag +'</a>';
 }
 tableBox.innerHTML += tableHTMLString;
 

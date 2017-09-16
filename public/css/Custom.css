@@ -1,21 +1,40 @@
-.tableTags{
-  margin-top: 6rem;
-  margin-bottom: 6rem;
+/*body{*/
+  /*background: url("../../assets/bg.gif");*/
+/*}*/
+/*.masthead{*/
+    /*background-color: white;*/
+/*}*/
+/*.content{*/
+    /*background-color: white;*/
+/*}*/
+.tagsPanel{
+  margin-bottom: 3rem;
   background-color: inherit;
+  text-align: left;
 }
 
-.tableTags tbody tr td, tbody tr th{
-  text-align: center;
-  background-color: white;
-  border-color: white;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-}
 .tag{
-   padding: .5rem;
+   display: inline-block;
+   height: 40px;
+   line-height: 40px;
+   padding: 0px 10px;
+   margin: 0px 10px;
+   text-decoration: none;
+}
+.tag:hover{
+  text-decoration: none;
+  background-color: #e5e5e5;
+  border-radius: 5px;
+}
+.selectTag:hover{
+  text-decoration: none;
 }
 .selectTag{
     background-color: #e5e5e5;
-    border-radius: 1rem;
-    padding: .5rem;
+    height: 40px;
+    line-height: 40px;
+    padding: 0px 10px;
+    margin: 0px 10px;
+    border-radius: 5px;
+    display: inline-block;
 }
