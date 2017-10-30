@@ -11,16 +11,18 @@ tags: iOS,Objective-C
 
 >如果要使用Storyboard，请确认你的UIBarButtonItem的customView存在并且为UIButton
 
+<!-- more -->
+
 
 ## 先说说UINavigationBar的问题
 ##### 1. 返回按钮的问题: 
   下面两种方式，不是使用category，就是使用继承，还有最坑的就是一个一个的写。
 
   - 设置返回按钮无文字自定义图标:  
-  {% highlight objc %}
-  [[UINavigationBar appearance] setBackIndicatorImage:[UIImage imageNamed:@"back"]];
-  self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-  {% endhighlight objc %}
+      {% highlight objc %}
+        [[UINavigationBar appearance] setBackIndicatorImage:[UIImage imageNamed:@"back"]];
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+        {% endhighlight objc %}
 
 >结果是: 导致响应热区过大
 >![picture]({{site.baseurl}}/assets/original/JIMNavigationBarBackItem.png)

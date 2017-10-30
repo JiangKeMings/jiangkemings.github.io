@@ -7,6 +7,8 @@ tags: iOS,Objective-C
 ![picture]({{site.baseurl}}/assets/original/simpleImageBrowser.gif)
 [GitHub](https://github.com/SilverJkm/JMImageBrowser)
 
+<!-- more -->
+
 {% highlight objc %}
  /**
  初始化方法
@@ -43,7 +45,7 @@ tags: iOS,Objective-C
   * 使用rectBlock来返回相应的Rect
   * 坐标转换的方法 : `convertRect: toView:` ，将第二参数设置为nil，将默认转换到当前window的坐标系中
 
-<!-- more -->
+
 
 {% highlight objc %}
 JMImageBrowser *vc = [[JMImageBrowser alloc]initWithUrls:originalArr index:selectIndex rectBlock:^CGRect(NSUInteger index) {
