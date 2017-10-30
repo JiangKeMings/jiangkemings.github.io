@@ -1,11 +1,11 @@
 ---
 layout: post
-title: 一个简单的图片浏览器
+title: iOS - 简单的图片浏览器
 category: original
 tags: iOS,Objective-C
 ---
 ![picture]({{site.baseurl}}/assets/original/simpleImageBrowser.gif)
-[GitHub地址](https://github.com/SilverJkm/JMImageBrowser)
+[GitHub](https://github.com/SilverJkm/JMImageBrowser)
 
 {% highlight objc %}
  /**
@@ -17,31 +17,31 @@ tags: iOS,Objective-C
  @return JMImageBrowser
  */
 - (instancetype)initWithUrls:(NSArray <NSString *>*)urls
-					   index:(NSUInteger)index
-				   rectBlock:(CGRect(^)(NSUInteger index))rectBlock
-				 scrollBlock:(nullable void(^)(NSUInteger index))scrollBlock;
-{% endhighlight objc %}
+     	   index:(NSUInteger)index
+     			   rectBlock:(CGRect(^)(NSUInteger index))rectBlock
+     			 scrollBlock:(nullable void(^)(NSUInteger index))scrollBlock;
+     {% endhighlight objc %}
 
 ### 显示和隐藏动画的思路
 1. 使用选中的Index初始化ViewController，并形成VC自身的循环引用
 2. 将collectionView的offset设置到当前Index
-{% highlight objc %}
+  {% highlight objc %}
   	_cycleSelf = self;
-      _urls = urls;
-      _rectBlock = rectBlock;
-      _scrollBlock = scrollBlock;
-      self.currentIndex = index;
-      UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)_collectionView.collectionViewLayout;
-      _collectionView.contentOffset = CGPointMake(layout.itemSize.width * index, 0);
-{% endhighlight objc %}
+  	_urls = urls;
+  	_rectBlock = rectBlock;
+  	_scrollBlock = scrollBlock;
+  	self.currentIndex = index;
+  	UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)_collectionView.collectionViewLayout;
+  	_collectionView.contentOffset = CGPointMake(layout.itemSize.width * index, 0);
+  {% endhighlight objc %}
 
 3. 在VC的ViewWillAppear处，根据是否存在缓存，来决定是否执行动画
 4. 动画执行时，应该是先用一个黑色的遮罩挡住之前显示的内容，再在其上添加一个ImageView专用来执行开始结束动画。
 
-	* 对于开始动画，需要一个相对于window坐标系的Rect来作为动画的起始frame。
-	* 对于结束动画，同样需要一个相对于window坐标系的Rect来作为动画的结束frame。
-	* 使用rectBlock来返回相应的Rect
-	* 坐标转换的方法 : `convertRect: toView:` ，将第二参数设置为nil，将默认转换到当前window的坐标系中
+  * 对于开始动画，需要一个相对于window坐标系的Rect来作为动画的起始frame。
+  * 对于结束动画，同样需要一个相对于window坐标系的Rect来作为动画的结束frame。
+  * 使用rectBlock来返回相应的Rect
+  * 坐标转换的方法 : `convertRect: toView:` ，将第二参数设置为nil，将默认转换到当前window的坐标系中
 
 <!-- more -->
 
@@ -62,8 +62,8 @@ JMImageBrowser *vc = [[JMImageBrowser alloc]initWithUrls:originalArr index:selec
     [super viewWillAppear:animated];
     UIImage *CacheImage = [[SDImageCache sharedImageCache]imageFromCacheForKey:_urls[_currentIndex]];
     [self showAnimation:CacheImage];
-}
-{% endhighlight objc %}
+    }
+    {% endhighlight objc %}
 
 {% highlight objc %}
 - (void)showAnimation:(UIImage *)image{
@@ -81,7 +81,7 @@ JMImageBrowser *vc = [[JMImageBrowser alloc]initWithUrls:originalArr index:selec
     } completion:^(BOOL finished) {
         _coverView.hidden = YES;
     }];
-}
+    }
 - (void)dismissAniamtionWithImage:(UIImage *)image{
     if (image == nil) {
         [self.view removeFromSuperview];
@@ -100,8 +100,8 @@ JMImageBrowser *vc = [[JMImageBrowser alloc]initWithUrls:originalArr index:selec
         [self.view removeFromSuperview];
         _cycleSelf = nil;
     }];
-}
-{% endhighlight objc %}
+    }
+    {% endhighlight objc %}
 
 ### 图片加载与显示
 
@@ -135,7 +135,7 @@ JMImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifie
         if (![weakCell.currentURL.absoluteString isEqualToString:imageURL.absoluteString] && cacheType == SDImageCacheTypeNone){
             return;
         }
-
+    
         if ([imageURL.absoluteString hasSuffix:@".gif"]) {
             cell.imageView.animatedImage = [[FLAnimatedImage alloc]initWithAnimatedGIFData:data];
         }else{
@@ -170,8 +170,8 @@ JMImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifie
     }
     _progress = progress >= 1.0 ? 1.00 : progress;
     self.progressLayer.progress = _progress;
-}
-{% endhighlight objc %}
+    }
+    {% endhighlight objc %}
 
 {% highlight objc %}
 //进度条，百分比Layer
@@ -188,7 +188,7 @@ JMImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifie
         return YES;
     }
     return [super needsDisplayForKey:key];
-}
+    }
 
 //CoreAnimation动画时的帧，用于获取自定义变量progress
 - (instancetype)initWithLayer:(JMImageBrowserProgrsssLayer *)layer{
@@ -196,13 +196,13 @@ JMImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifie
         self.progress = layer.progress;
     }
     return self;
-}
+    }
 
 //设置progress也直接进行重绘
 - (void)setProgress:(CGFloat)progress{
     _progress = progress;
     [self setNeedsDisplay];
-}
+    }
 
 //实现绘制
 - (void)drawInContext:(CGContextRef)ctx{
@@ -248,6 +248,6 @@ JMImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifie
     CTFrameDraw(frame, ctx);
     CFRelease(framesetter);
     CFRelease(frame);
-}
+    }
 
 {% endhighlight objc %}
