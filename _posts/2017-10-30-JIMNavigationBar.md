@@ -7,6 +7,9 @@ tags: iOS,Objective-C
 
 ![picture]({{site.baseurl}}/assets/original/JIMNavigationBar.gif)
 
+返回按钮是这样的:
+![picture]({{site.baseurl}}/assets/original/JIMNavigationBarTargetBackItem.png)
+
 [GitHub](https://github.com/SilverJkm/JIMNavigationBar)
 
 >如果要使用Storyboard，请确认你的UIBarButtonItem的customView存在并且为UIButton
